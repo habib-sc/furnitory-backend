@@ -32,6 +32,13 @@ async function run () {
             const result = await items.toArray();
             res.send(result);
         });
+
+        // Items post endpoint
+        app.post('/item/add', async (req, res) => {
+            const item = req.body;
+            const result = await itemsCollection.insertOne(item);
+            res.send(result);
+        });
     }
     finally {
 
