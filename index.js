@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 const app = express();
@@ -25,7 +25,7 @@ async function run () {
         await client.connect();
         const itemsCollection = client.db('Furnitory').collection('Items');
 
-        // Items get endpoint 
+        // Item get endpoint 
         app.get('/items', async (req, res) => {
             const query = {};
             const items = itemsCollection.find(query);
@@ -33,10 +33,23 @@ async function run () {
             res.send(result);
         });
 
-        // Items post endpoint
+        // Item post endpoint
         app.post('/item/add', async (req, res) => {
             const item = req.body;
             const result = await itemsCollection.insertOne(item);
+            res.send(result);
+        });
+
+        // Item update endpoint
+        app.put('/item/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const newItemData = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updateDoc = {
+                $set: {...newItemData}
+            }
+            const result = await itemsCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         });
     }
