@@ -33,6 +33,14 @@ async function run () {
             res.send(result);
         });
 
+        // Item detail endpoint 
+        app.get('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await itemsCollection.findOne(filter);
+            res.send(result);
+        });
+
         // Item post endpoint
         app.post('/item/add', async (req, res) => {
             const item = req.body;
