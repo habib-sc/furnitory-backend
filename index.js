@@ -24,6 +24,7 @@ async function run () {
         // DB Connection 
         await client.connect();
         const itemsCollection = client.db('Furnitory').collection('Items');
+        const usersCollection= client.db('Furnitory').collection('Users');
 
         // Item get endpoint 
         app.get('/items', async (req, res) => {
@@ -66,6 +67,14 @@ async function run () {
             const id = req.params.id;
             const filter = {_id: ObjectId(id)};
             const result = await itemsCollection.deleteOne(filter);
+            res.send(result);
+        });
+
+        // User Info =======================================================
+        // user post
+        app.post('/user/add', async (req,res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
             res.send(result);
         });
     }
