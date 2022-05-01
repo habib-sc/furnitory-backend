@@ -28,7 +28,15 @@ async function run () {
 
         // Item get endpoint 
         app.get('/items', async (req, res) => {
-            const query = {};
+            const email = req.query.email;
+            let query;
+            if (email) {
+                // query for getting data by email 
+                query = {addedBy: email};
+            }else {
+                // query for getting all data 
+                query = {};
+            }
             const items = itemsCollection.find(query);
             const result = await items.toArray();
             res.send(result);
