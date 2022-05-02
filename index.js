@@ -25,7 +25,9 @@ async function run () {
         await client.connect();
         const itemsCollection = client.db('Furnitory').collection('Items');
         const usersCollection= client.db('Furnitory').collection('Users');
+        const blogsCollection = client.db('Furnitory').collection('Blogs');
 
+        // Item Section =========================================================
         // Item get endpoint 
         app.get('/items', async (req, res) => {
             const email = req.query.email;
@@ -78,11 +80,19 @@ async function run () {
             res.send(result);
         });
 
-        // User Info =======================================================
+        // Users Section =======================================================
         // user post
         app.post('/user/add', async (req,res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
+        // Blog Section ==============================================================
+        // blog post 
+        app.post('/blog/add', async (req, res) => {
+            const blog = req.body;
+            const result = await blogsCollection.insertOne(blog);
             res.send(result);
         });
     }
