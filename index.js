@@ -95,6 +95,22 @@ async function run () {
             const result = await blogsCollection.insertOne(blog);
             res.send(result);
         });
+
+        // Blog get
+        app.get('/blogs', async (req, res) => {
+            const email = req.query.email;
+            let query;
+            if (email) {
+                // query for getting data by email 
+                query = {author: email};
+            }else {
+                // query for getting all data 
+                query = {};
+            }
+            const blogs = blogsCollection.find(query);
+            const result = await blogs.toArray();
+            res.send(result);
+        });
     }
     finally {
 
