@@ -111,6 +111,14 @@ async function run () {
             const result = await blogs.toArray();
             res.send(result);
         });
+
+        // Blog Get by id
+        app.get('/blog/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await blogsCollection.findOne(filter);
+            res.send(result);
+        });
     }
     finally {
 
