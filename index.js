@@ -56,14 +56,18 @@ async function run () {
         // Items Section =========================================================
         // Users Items get endpoint 
         app.get('/users-items', verifyJwtToken, async (req, res) => {
-            const email = req.query.email;
+            const email = req.query.email;  
+            const limit = parseInt(req.query.limit);
+            const page = parseInt(req.query.page);
             const decodedEmail = req.decoded.email;
+
             const query = {addedBy: email};
-     
+            
             if (email === decodedEmail) {
                 const items = itemsCollection.find(query);
-                const result = await items.toArray();
-                res.send(result);
+                const result = await items.skip(limit*page).limit(limit).toArray();
+                const itemCount = await itemsCollection.countDocuments(query);
+                res.send({result, itemCount});
             }
             else{
                 res.send({access: 'Forbidden!'});
@@ -72,10 +76,13 @@ async function run () {
 
         // Items get endpoint 
         app.get('/items', async (req, res) => {
+            const limit = parseInt(req.query.limit);
+            const page = parseInt(req.query.page);
+            const itemCount = await itemsCollection.estimatedDocumentCount();
             const query = {};
             const items = itemsCollection.find(query);
-            const result = await items.toArray();
-            res.send(result);
+            const result = await items.skip(limit*page).limit(limit).toArray();
+            res.send({result, itemCount});
         });
 
         // Item detail endpoint 
